@@ -16,6 +16,9 @@ numpy
 
 ## Example
 ```python
+import sys
+sys.path.append('..')
+
 ## Batch Encoding and Decoding
 from SpiCoder.Batch import TBR as TBRb
 from SpiCoder.Batch import BSA as BSAb
@@ -38,13 +41,18 @@ targ_df.plot()
 
 ## Initialize
 # TBR
-tbrb = TBRb(1.7)
-tbrs = TBRs(1.7)
-
+# f_factor: double[0:]
+tbr_f_factor = 1.7
+tbrb = TBRb(tbr_f_factor)
+tbrs = TBRs(tbr_f_factor)
 # BSA
-fir = sg.firwin(10, 0.01, fs=1)
-bsab = BSAb(1, fir)
-bsas = BSAs(1, fir)
+# threshold: double[0:], window: int[1:], :fc: double[0:0.5]
+bsa_threshold = 0.85
+bsa_window = 24
+bsa_fc = 1.5e-06
+fir = sg.firwin(bsa_window, bsa_fc, fs=1)
+bsab = BSAb(bsa_threshold, fir)
+bsas = BSAs(bsa_threshold, fir)
 
 # initialization is necessary at sequential
 bsas.shift = float(np.min(targ_df))
